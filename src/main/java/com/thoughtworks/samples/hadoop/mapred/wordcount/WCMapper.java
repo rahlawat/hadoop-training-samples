@@ -1,4 +1,4 @@
-package com.thoughtworks.samples.hadoop.mapred.wordcount;
+ackage com.thoughtworks.samples.hadoop.mapred.wordcount;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -11,18 +11,17 @@ import java.util.regex.Pattern;
 public class WCMapper extends Mapper<Object, Text, Text, IntWritable> {
 
     private Pattern wordPattern
-            = Pattern.compile("[^a-z0-9]*([a-z0-9]+)[^a-z0-9]*");
+            = Pattern.compile("[a-z0-9.-]+\\.[a-z]{2,4}");
 
     @Override
     public void map(Object key, Text text, Context context)
             throws IOException, InterruptedException {
         String line = text.toString();
-        String[] tokens = line.split(" ");
+        String[] tokens = line.split("@");
         for (String token : tokens) {
-            Matcher wordMatcher = wordPattern.matcher(token.toLowerCase());
+            Matcher wordMatcher = wordPattern.matcher(token);
             if (wordMatcher.matches()) {
-                String word = wordMatcher.group(1);
-                context.write(new Text(word), new IntWritable(1));
+                context.write(new Text(token), new IntWritable(1));
             } else {
                 context.getCounter(SKIPPED_WORDS.MISMATCHED_WORD).increment(1);
             }
