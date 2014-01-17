@@ -26,6 +26,8 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
             Matcher wordMatcher = wordPattern.matcher(token);
             if (wordMatcher.matches() && !token.matches(ignore)) {
                 context.write(new Text(token), new IntWritable(1));
+            }  else {
+                context.getCounter(IGNORED_DOMAINS.MATCHED).increment(1);
             }
         }
     }
