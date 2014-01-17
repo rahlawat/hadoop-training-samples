@@ -24,10 +24,13 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
         System.out.println(ignore);
         for (String token : tokens) {
             Matcher wordMatcher = wordPattern.matcher(token);
-            if (wordMatcher.matches() && !token.matches(ignore)) {
-                context.write(new Text(token), new IntWritable(1));
-            }  else {
-                context.getCounter(IGNORED_DOMAINS.MATCHED).increment(1);
+            if (wordMatcher.matches()) {
+                if(!token.matches(ignore)){
+                    context.write(new Text(token), new IntWritable(1));
+                }
+                else {
+                    context.getCounter(IGNORED_DOMAINS.MATCHED).increment(1);
+                }
             }
         }
     }
