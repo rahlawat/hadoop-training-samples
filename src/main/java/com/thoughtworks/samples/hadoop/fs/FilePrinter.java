@@ -63,7 +63,7 @@ public class FilePrinter extends Configured implements Tool {
         while (bytesRemaining > 0 && bytesRead != -1) {
             bytesRead = inputStream.read(buffer, 0, (int) Math.min(buffer.length, bytesRemaining));
             if (bytesRead > 0)
-                System.out.println(new String(buffer, 0, bytesRead));
+                // System.out.println(new String(buffer, 0, bytesRead));
             bytesRemaining -= bytesRead;
         }
     }
