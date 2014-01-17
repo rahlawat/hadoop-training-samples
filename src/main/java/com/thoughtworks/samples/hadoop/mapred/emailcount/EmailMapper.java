@@ -1,5 +1,6 @@
 package com.thoughtworks.samples.hadoop.mapred.emailcount;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -18,9 +19,12 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
             throws IOException, InterruptedException {
         String line = text.toString();
         String[] tokens = line.split("@");
+        Configuration config =context.getConfiguration();
+        String[] ignore = config.getStrings("emailcount.ignoredomain");
+        System.out.println(ignore[0]);
         for (String token : tokens) {
             Matcher wordMatcher = wordPattern.matcher(token);
-            if (wordMatcher.matches()) {
+            if (wordMatcher.matches() && !token.matches(ignore[0])) {
                 context.write(new Text(token), new IntWritable(1));
             }
         }
