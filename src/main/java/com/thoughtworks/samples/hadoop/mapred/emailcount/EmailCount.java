@@ -20,6 +20,7 @@ public class EmailCount extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
+        conf.set("emailcount.ignoredomain", "hotmail.com");
         Job emailCountJob = new Job(conf, "EmailCount");
         emailCountJob.setJarByClass(EmailCount.class);
         emailCountJob.setMapperClass(EmailMapper.class);

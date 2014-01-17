@@ -20,11 +20,11 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
         String line = text.toString();
         String[] tokens = line.split("@");
         Configuration config =context.getConfiguration();
-        String[] ignore = config.getStrings("emailcount.ignoredomain");
-        System.out.println(ignore[0]);
+        String ignore = config.get("emailcount.ignoredomain");
+        System.out.println(ignore);
         for (String token : tokens) {
             Matcher wordMatcher = wordPattern.matcher(token);
-            if (wordMatcher.matches() && !token.matches(ignore[0])) {
+            if (wordMatcher.matches() && !token.matches(ignore)) {
                 context.write(new Text(token), new IntWritable(1));
             }
         }
