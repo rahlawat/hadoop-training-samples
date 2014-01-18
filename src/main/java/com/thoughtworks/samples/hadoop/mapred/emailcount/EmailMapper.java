@@ -18,7 +18,7 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
     Map<Text, IntWritable> domainCounterMap;
     @Override
     public void setup(Context context){
-        Map<Text,IntWritable> domainCounterMap = new HashMap<Text, IntWritable>();
+       domainCounterMap = new HashMap<Text, IntWritable>();
     }
 
     @Override
