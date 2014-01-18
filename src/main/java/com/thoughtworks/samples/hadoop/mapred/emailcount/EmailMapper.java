@@ -30,9 +30,9 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
         String ignore = config.get("emailcount.ignoredomain");
         System.out.println(ignore);
         for (String token : tokens) {
-            Matcher wordMatcher = wordPattern.matcher(token.toString());
+            Matcher wordMatcher = wordPattern.matcher(token);
             if (wordMatcher.matches()) {
-                String word = token.toString();
+                String word = token;
                 if(!word.matches(ignore)){
                     IntWritable count = domainCounterMap.get(token);
                     domainCounterMap.put(new Text(token), new IntWritable(count.get() + 1) );
