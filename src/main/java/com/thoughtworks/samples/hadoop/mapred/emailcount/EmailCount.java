@@ -1,5 +1,6 @@
 package com.thoughtworks.samples.hadoop.mapred.emailcount;
 
+import com.thoughtworks.samples.hadoop.mapred.generic.IdentityReducer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -24,7 +25,7 @@ public class EmailCount extends Configured implements Tool {
         Job emailCountJob = new Job(conf, "EmailCount");
         emailCountJob.setJarByClass(EmailCount.class);
         emailCountJob.setMapperClass(EmailMapper.class);
-        emailCountJob.setReducerClass(EmailReducer.class);
+        emailCountJob.setReducerClass(IdentityReducer.class);
         emailCountJob.setOutputKeyClass(Text.class);
         emailCountJob.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(emailCountJob, new Path(args[0]));

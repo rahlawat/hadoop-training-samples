@@ -6,6 +6,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,11 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
 
     private Pattern wordPattern
             = Pattern.compile("[a-z0-9.-]+\\.[a-z]{2,4}");
+    Map<Text, IntWritable> domainCounterMap;
+    @Override
+    public void setup(Context context){
+        Map<Text,IntWritable> domainCounterMap = new HashMap<Text, IntWritable>();
+    }
 
     @Override
     public void map(Object key, Text text, Context context)
@@ -23,10 +30,12 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
         String ignore = config.get("emailcount.ignoredomain");
         System.out.println(ignore);
         for (String token : tokens) {
-            Matcher wordMatcher = wordPattern.matcher(token);
+            Matcher wordMatcher = wordPattern.matcher(token.toString());
             if (wordMatcher.matches()) {
-                if(!token.matches(ignore)){
-                    context.write(new Text(token), new IntWritable(1));
+                String word = token.toString();
+                if(!word.matches(ignore)){
+                    IntWritable count = domainCounterMap.get(token);
+                    domainCounterMap.put(new Text(token), new IntWritable(count.get() + 1) );
                 }
                 else {
                     context.getCounter(IGNORED_DOMAINS.MATCHED).increment(1);
@@ -34,4 +43,12 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
             }
         }
     }
+
+    @Override
+    public void cleanup(Context context) throws IOException, InterruptedException {
+        for (Text key : domainCounterMap.keySet()) {
+            context.write(key, domainCounterMap.get(key));
+        }
+    }
+
 }
