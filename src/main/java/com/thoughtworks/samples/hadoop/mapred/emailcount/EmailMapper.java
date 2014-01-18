@@ -32,10 +32,10 @@ public class EmailMapper extends Mapper<Object, Text, Text, IntWritable> {
         for (String token : tokens) {
             Matcher wordMatcher = wordPattern.matcher(token);
             if (wordMatcher.matches()) {
-                String word = token;
-                if(!word.matches(ignore)){
-                    IntWritable count = domainCounterMap.get(token);
-                    domainCounterMap.put(new Text(token), new IntWritable(count.get() + 1) );
+                if(!token.matches(ignore)){
+                    Text word = new Text(token);
+                    IntWritable count = domainCounterMap.get(word);
+                    domainCounterMap.put(word, new IntWritable(count.get() + 1) );
                 }
                 else {
                     context.getCounter(IGNORED_DOMAINS.MATCHED).increment(1);
